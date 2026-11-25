@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MediBuddy – AI Pharmacy Assistant</title>
+<style>
+:root{--blue:#1d5fd1;--blue-d:#0f3f9a;--green:#b9f0cc;--green-d:#5fcf8f;--ink:#0e2140;--muted:#5a6b85;--bg:#f5f9ff;--card:#fff;--line:#e3ecf8;--soft:#eef5ff;--bot:#c9f2d4;--bot-t:#0f3a22;--res:#f1faf4;--glass:rgba(255,255,255,.78);--alert:#ffe3e3;--alert-t:#8a1c1c;--note:#fff4d6;--note-t:#6b4a00;--h1:#d6e6ff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--blue:#5b97f7;--blue-d:#9cc2ff;--green:#1f4a35;--green-d:#46b57a;--ink:#e6eefc;--muted:#9db0cc;--bg:#0b1626;--card:#13243b;--line:#223a5a;--soft:#10243d;--bot:#1d4a36;--bot-t:#d9f7e4;--res:#10301f;--glass:rgba(19,36,59,.8);--alert:#4a1b1b;--alert-t:#ffd0d0;--note:#3b3000;--note-t:#ffe9a6;--h1:#16335c}}
+:root[data-theme="dark"]{--blue:#5b97f7;--blue-d:#9cc2ff;--green:#1f4a35;--green-d:#46b57a;--ink:#e6eefc;--muted:#9db0cc;--bg:#0b1626;--card:#13243b;--line:#223a5a;--soft:#10243d;--bot:#1d4a36;--bot-t:#d9f7e4;--res:#10301f;--glass:rgba(19,36,59,.8);--alert:#4a1b1b;--alert-t:#ffd0d0;--note:#3b3000;--note-t:#ffe9a6;--h1:#16335c}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg)}
+a{cursor:pointer}
+.grad{background:linear-gradient(90deg,var(--blue),var(--green-d));-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;color:var(--blue)}
+.logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#1d5fd1,#5fcf8f);color:#fff;display:grid;place-items:center;font-size:22px}
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 6vw;background:var(--glass);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.links{display:flex;gap:28px;font-weight:500;color:var(--muted)}.links a:hover{color:var(--blue)}
+.btn{border:0;cursor:pointer;background:linear-gradient(90deg,#1d5fd1,#2f86e0);color:#fff;font-weight:600;font-size:16px;padding:14px 26px;border-radius:14px;box-shadow:0 10px 24px rgba(29,95,209,.3);transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}.btn.small{padding:10px 20px;font-size:14px}
+.btn.ghost{background:var(--card);color:var(--blue);box-shadow:inset 0 0 0 1.5px var(--blue)}
+.btn.light{background:#fff;color:#0f3f9a}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;padding:70px 6vw 80px;background:radial-gradient(800px 400px at 85% 10%,var(--green),transparent),radial-gradient(700px 400px at 0% 0%,var(--h1),transparent)}
+.badge{display:inline-block;background:var(--card);color:var(--blue);padding:7px 14px;border-radius:20px;font-size:13px;font-weight:600;box-shadow:0 4px 14px rgba(29,95,209,.12)}
+.hero h1{font-size:clamp(34px,5vw,56px);line-height:1.1;margin:18px 0;font-weight:800}
+.hero p{font-size:18px;line-height:1.6;color:var(--muted);max-width:540px}
+.cta{display:flex;gap:14px;margin:28px 0;flex-wrap:wrap}
+.stats{display:flex;gap:34px}.stats div{display:flex;flex-direction:column}.stats b{font-size:28px;color:var(--blue)}.stats span{font-size:13px;color:var(--muted)}
+.mock{background:var(--glass);backdrop-filter:blur(12px);border-radius:24px;padding:20px;display:flex;flex-direction:column;gap:10px;box-shadow:0 30px 60px rgba(15,63,154,.18);border:1px solid var(--line)}
+.m{max-width:86%;padding:10px 14px;border-radius:16px;font-size:15px;line-height:1.45;white-space:pre-wrap}
+.m.bot{background:var(--bot);color:var(--bot-t);align-self:flex-start;border-bottom-left-radius:4px}
+.m.user{background:#1d5fd1;color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.section{padding:80px 6vw;text-align:center}.section.alt{background:var(--soft)}
+.section h2{font-size:clamp(26px,3.5vw,38px);margin:0 0 40px;font-weight:800}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:22px;max-width:1100px;margin:0 auto}
+.card{background:var(--card);border-radius:20px;padding:28px 24px;text-align:left;box-shadow:0 10px 30px rgba(15,63,154,.08);border:1px solid var(--line);transition:transform .2s}
+.card:hover{transform:translateY(-5px)}
+.card h3{margin:12px 0 6px}.card p{margin:0;color:var(--muted);line-height:1.55}
+.ico{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;font-size:26px;background:linear-gradient(135deg,var(--h1),var(--green))}
+.num{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#1d5fd1,#5fcf8f);color:#fff;display:grid;place-items:center;font-weight:800}
+.final{margin:0 6vw 70px;padding:60px 20px;text-align:center;border-radius:28px;color:#fff;background:linear-gradient(120deg,#0f3f9a,#1d5fd1 55%,#46b57a)}
+.final h2{font-size:clamp(26px,4vw,40px);margin:0 0 22px}
+footer{text-align:center;padding:30px 6vw 40px;color:var(--muted);font-size:14px}footer p{max-width:700px;margin:0 auto 10px;line-height:1.6}
+.chatpage{height:100vh;height:100dvh;display:flex;flex-direction:column;background:linear-gradient(160deg,var(--soft),var(--res))}
+.chathead{display:flex;align-items:center;justify-content:space-between;padding:12px 5vw;background:var(--card);border-bottom:1px solid var(--line)}
+.back{border:0;background:var(--bot);color:var(--bot-t);font-weight:600;padding:8px 16px;border-radius:12px;cursor:pointer}
+.chatbox{flex:1;min-height:0;width:100%;max-width:640px;margin:16px auto;display:flex;flex-direction:column;background:var(--card);border-radius:24px;overflow:hidden;box-shadow:0 20px 50px rgba(15,63,154,.15)}
+.seasons{display:flex;gap:6px;padding:10px 14px;background:var(--soft);overflow-x:auto}
+.seasons button{border:1px solid var(--blue);background:transparent;color:var(--blue);border-radius:16px;padding:5px 14px;font-size:13px;cursor:pointer;white-space:nowrap}
+.seasons button.on{background:#1d5fd1;border-color:#1d5fd1;color:#fff}
+.chat{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+.res{align-self:flex-start;width:96%;background:var(--res);border:1px solid var(--green-d);border-radius:16px;padding:14px;font-size:14px;line-height:1.5}
+.res.mini{width:100%;background:var(--card)}
+.res h3{margin:10px 0 4px;font-size:14px;color:var(--blue)}.res h3:first-child{margin-top:0}.res ul{margin:0;padding-left:18px}
+.alert{background:var(--alert);color:var(--alert-t);padding:8px 10px;border-radius:10px;margin-bottom:6px}
+.note{background:var(--note);color:var(--note-t);padding:9px 10px;border-radius:10px;margin-top:10px;font-size:13px}
+.bar{padding:12px 14px;border-top:1px solid var(--line);background:var(--soft);display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--blue);background:var(--card);color:var(--blue);border-radius:18px;padding:8px 15px;font-size:14px;cursor:pointer}
+.chip:hover{background:var(--bot);color:var(--bot-t)}
+.bar input{flex:1;min-width:0;border:1.5px solid var(--blue);border-radius:18px;padding:9px 14px;font-size:15px;background:var(--card);color:var(--ink)}
+.send{border:0;background:#1d5fd1;color:#fff;border-radius:18px;padding:9px 18px;cursor:pointer}
+@media(max-width:820px){.hero{grid-template-columns:1fr;padding-top:40px}.links{display:none}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script>
+const h = React.createElement, { useState, useEffect, useRef } = React;
+const SEASONS = { winter: "Winter", summer: "Summer", monsoon: "Monsoon" };
+function detectSeason() { const m = new Date().getMonth() + 1; return m >= 3 && m <= 6 ? "summer" : m >= 7 && m <= 10 ? "monsoon" : "winter"; }
+const SX_Q = { winter: "Any chills or body ache?", summer: "Any vomiting or loose motions (diarrhea)?", monsoon: "Any severe body/joint pain, rash, or pain behind the eyes?" };
+const STEPS = [
+  { k: "age", q: "Hi! I’m MediBuddy, your pharmacy assistant. Who is this for?", o: ["Adult (18–59)", "Senior (60+)", "Child (2–17)", "Infant (under 2)"] },
+  { k: "risk", q: "Do any of these apply?", o: ["None", "Pregnant or breastfeeding", "Liver or kidney disease", "Allergy to medicines"] },
+  { k: "fever", q: "Do you have a fever?", o: ["Yes", "No"] },
+  { k: "temp", q: "What is your temperature? (e.g. 100.4 °F or 38 °C)", inp: true, show: a => a.fever === "Yes" },
+  { k: "days", q: "How long have you had these symptoms?", o: ["1–2 days", "3 or more days"] },
+  { k: "throat", q: "Do you have throat pain?", o: ["Yes", "No"] },
+  { k: "cough", q: "Do you have a cough?", o: ["No cough", "Dry cough", "Cough with phlegm"] },
+  { k: "nose", q: "Runny or blocked nose, or sneezing?", o: ["Yes", "No"] },
+  { k: "sx", q: s => SX_Q[s], o: ["Yes", "No"] },
+  { k: "red", q: "Any breathing difficulty, chest pain, confusion or seizures?", o: ["Yes", "No"] }
+];
+function nextIdx(i, a) { let j = i + 1; while (j < STEPS.length && STEPS[j].show && !STEPS[j].show(a)) j++; return j; }
+function parseTempF(t) { let v = parseFloat(String(t).replace(",", ".")); if (isNaN(v)) return null; if (v >= 33 && v <= 44) v = v * 9 / 5 + 32; return v >= 90 && v <= 110 ? Math.round(v * 10) / 10 : null; }
+
+function buildResult(a, season) {
+  const urgent = [], cautions = [], remedies = [], meds = [];
+  const tF = a.temp ? parseTempF(a.temp) : null;
+  if (a.red === "Yes") urgent.push("Breathing difficulty, chest pain, confusion or seizures need emergency care. Please go to the nearest hospital now.");
+  if (tF && tF >= 103) urgent.push("A fever of " + tF + " °F (103 °F or higher) needs a doctor’s attention today.");
+  if (a.age.startsWith("Infant")) urgent.push("Infants under 2 should always be seen by a doctor for fever or cold symptoms.");
+  const stop = urgent.length > 0;
+  if (a.fever === "Yes" && a.days.startsWith("3")) cautions.push("Fever lasting 3 or more days should be checked by a doctor.");
+  if (season === "monsoon" && a.fever === "Yes" && a.sx === "Yes") cautions.push("Fever with severe body pain or rash in the monsoon can be dengue, malaria or typhoid. Please get tested (CBC, platelet count, dengue/malaria tests).");
+  if (season === "summer" && a.sx === "Yes") cautions.push("Vomiting or loose motions can cause dehydration. See a doctor if you cannot keep fluids down or feel very weak.");
+  const restricted = a.risk !== "None" || a.age.startsWith("Child");
+  if (!stop) {
+    if (season === "winter") remedies.push("Drink warm fluids; ginger–tulsi tea with honey helps (no honey under 1 year).", "Steam inhalation once or twice a day for a blocked nose.", "Wear warm clothes and rest well.");
+    if (season === "summer") remedies.push("Drink plenty of water, coconut water, buttermilk or lemon water.", "Eat light, home-cooked food and avoid street food.", "Stay cool; a lukewarm sponge bath helps bring down fever.");
+    if (season === "monsoon") remedies.push("Drink only boiled or filtered water and eat fresh, hot food.", "Use mosquito nets or repellents and avoid stagnant water nearby.", "Rest and keep drinking fluids, including ORS.");
+    if (a.throat === "Yes") remedies.push("Gargle with warm salt water 3–4 times a day.");
+    if (a.cough !== "No cough") remedies.push("Sip warm water often; turmeric milk or honey (age 1+) may soothe the cough.");
+    if (!restricted) {
+      if (a.fever === "Yes") meds.push("Paracetamol (acetaminophen) for fever and body ache. Follow the label dose; do not exceed 4 g a day.");
+      if (season === "monsoon" && a.fever === "Yes") meds.push("Avoid aspirin and ibuprofen-type painkillers until dengue is ruled out.");
+      if (a.throat === "Yes") meds.push("Throat lozenges (e.g. amylmetacresol or benzocaine-based) for throat pain.");
+      if (a.cough === "Dry cough") meds.push("Dextromethorphan syrup for dry cough.");
+      if (a.cough === "Cough with phlegm") meds.push("Ambroxol syrup to loosen phlegm.");
+      if (a.nose === "Yes") meds.push("Cetirizine 10 mg at night for runny nose or sneezing (may cause drowsiness).");
+      if (season === "summer" && a.sx === "Yes") meds.push("ORS (oral rehydration salts) after every loose motion.");
+      if (season === "monsoon" && a.fever === "Yes") meds.push("ORS to prevent dehydration.");
+      if (!meds.length) meds.push("No medicine seems necessary right now. Rest and fluids are enough.");
+    } else meds.push("Because of age, pregnancy/breastfeeding, an existing condition or an allergy, I won’t suggest medicines. Please ask a doctor or pharmacist for the right generic medicine and dose.");
+  }
+  return { urgent, cautions, remedies, meds, stop, season };
+}
+
+function Result({ r }) {
+  const sec = (t, items) => items.length ? [h("h3", { key: t }, t), h("ul", { key: t + "u" }, items.map((x, i) => h("li", { key: i }, x)))] : null;
+  return h("div", { className: "res" },
+    r.urgent.map((u, i) => h("div", { className: "alert", key: i }, "🚨 " + u)),
+    r.cautions.map((u, i) => h("div", { className: "alert", key: "c" + i }, "⚠️ " + u)),
+    r.stop ? h("p", null, "I can’t suggest home treatment for this. Please see a doctor.") : null,
+    sec("🌿 Home remedies (" + SEASONS[r.season] + ")", r.remedies),
+    sec("💊 Generic medicine suggestions", r.meds),
+    h("div", { className: "note" }, "⚠️ This is AI-based guidance, not a substitute for medical advice. Please consult your doctor before taking any medicine."));
+}
+
+function Chatbot() {
+  const [season, setSeason] = useState(detectSeason());
+  const [msgs, setMsgs] = useState([{ r: "bot", t: STEPS[0].q }]);
+  const [cur, setCur] = useState(0), [ans, setAns] = useState({}), [done, setDone] = useState(false), [txt, setTxt] = useState("");
+  const end = useRef(null);
+  useEffect(() => { end.current && end.current.scrollIntoView({ behavior: "smooth" }); }, [msgs]);
+  function answer(val) {
+    const step = STEPS[cur], add = [{ r: "user", t: val }];
+    if (step.inp && parseTempF(val) === null) { setMsgs(m => m.concat(add, [{ r: "bot", t: "Please enter a valid temperature, like 100.4 (°F) or 38 (°C)." }])); return; }
+    const a2 = Object.assign({}, ans, { [step.k]: val }); setAns(a2);
+    const n = nextIdx(cur, a2);
+    if (n >= STEPS.length) { add.push({ r: "bot", t: "Thanks! Based on your answers, here is what I suggest:" }, { r: "res", res: buildResult(a2, season) }); setDone(true); }
+    else { const q = STEPS[n].q; add.push({ r: "bot", t: typeof q === "function" ? q(season) : q }); setCur(n); }
+    setMsgs(m => m.concat(add)); setTxt("");
+  }
+  const restart = () => { setMsgs([{ r: "bot", t: STEPS[0].q }]); setCur(0); setAns({}); setDone(false); setTxt(""); };
+  const step = STEPS[cur];
+  const bar = done ? h("button", { className: "chip", onClick: restart }, "↻ Start over")
+    : step.inp ? [h("input", { key: "i", value: txt, inputMode: "decimal", placeholder: "Type temperature…", onChange: e => setTxt(e.target.value), onKeyDown: e => { if (e.key === "Enter" && txt.trim()) answer(txt.trim()); } }),
+        h("button", { key: "b", className: "send", onClick: () => txt.trim() && answer(txt.trim()) }, "Send")]
+    : step.o.map(o => h("button", { key: o, className: "chip", onClick: () => answer(o) }, o));
+  return h("div", { className: "chatbox" },
+    h("div", { className: "seasons" }, Object.keys(SEASONS).map(k => h("button", { key: k, className: k === season ? "on" : "", onClick: () => setSeason(k) }, SEASONS[k]))),
+    h("div", { className: "chat" }, msgs.map((m, i) => m.r === "res" ? h(Result, { key: i, r: m.res }) : h("div", { key: i, className: "m " + m.r }, m.t)), h("div", { ref: end })),
+    h("div", { className: "bar" }, bar));
+}
+
+const FEATURES = [["🩺", "Smart symptom questions", "Temperature, throat pain, cough and more, asked one step at a time."], ["🌦️", "Season-aware advice", "Winter flu, summer dehydration and monsoon fevers are handled differently."], ["💊", "Generic medicines only", "Suggests safe, affordable generic options and never antibiotics."], ["🌿", "Home remedies", "Simple, practical remedies matched to the season and your symptoms."], ["🚨", "Red-flag detection", "High fever, breathing trouble or infants trigger an urgent doctor alert."], ["🔒", "Private by design", "Runs in your browser. Your answers are not stored anywhere."]];
+const card = ([i, t, d]) => h("div", { className: "card", key: t }, h("div", { className: "ico" }, i), h("h3", null, t), h("p", null, d));
+
+function App() {
+  const [view, setView] = useState("home");
+  const go = id => { const e = document.getElementById(id); e && e.scrollIntoView({ behavior: "smooth" }); };
+  if (view === "chat") return h("div", { className: "chatpage" },
+    h("div", { className: "chathead" }, h("button", { className: "back", onClick: () => setView("home") }, "← Home"), h("div", { className: "brand" }, h("span", { className: "logo" }, "+"), "MediBuddy")),
+    h(Chatbot));
+  const start = () => setView("chat");
+  return h("div", null,
+    h("nav", { className: "nav" }, h("div", { className: "brand" }, h("span", { className: "logo" }, "+"), "MediBuddy"),
+      h("div", { className: "links" }, h("a", { onClick: () => go("features") }, "Features"), h("a", { onClick: () => go("how") }, "How it works"), h("a", { onClick: () => go("seasons") }, "Seasons")),
+      h("button", { className: "btn small", onClick: start }, "Start Chat")),
+    h("header", { className: "hero" },
+      h("div", null, h("span", { className: "badge" }, "✨ AI-based pharmacy assistant"),
+        h("h1", null, "Feeling unwell? Get ", h("span", { className: "grad" }, "smart, seasonal"), " care guidance in 2 minutes."),
+        h("p", null, "Answer a few simple questions and MediBuddy suggests home remedies and generic medicines suited to the season, with clear warnings when you should see a doctor."),
+        h("div", { className: "cta" }, h("button", { className: "btn", onClick: start }, "Check my symptoms →"), h("button", { className: "btn ghost", onClick: () => go("how") }, "How it works")),
+        h("div", { className: "stats" }, [["3", "Seasons covered"], ["10", "Quick questions"], ["0", "Data stored"]].map(s => h("div", { key: s[1] }, h("b", null, s[0]), h("span", null, s[1]))))),
+      h("div", { className: "mock" }, h("div", { className: "m bot" }, "Do you have a fever?"), h("div", { className: "m user" }, "Yes, 101 °F"), h("div", { className: "m bot" }, "Any throat pain or cough?"), h("div", { className: "m user" }, "Sore throat"),
+        h("div", { className: "res mini" }, "🌿 Warm salt-water gargle", h("br"), "💊 Paracetamol, throat lozenges", h("br"), h("small", null, "Please consult your doctor.")))),
+    h("section", { id: "features", className: "section" }, h("h2", null, "Everything you need, ", h("span", { className: "grad" }, "nothing you don’t")), h("div", { className: "grid3" }, FEATURES.map(card))),
+    h("section", { id: "how", className: "section alt" }, h("h2", null, "How it works"), h("div", { className: "grid3" },
+      [["1", "Tell us who", "Age group, pregnancy and allergies keep suggestions safe."], ["2", "Describe symptoms", "Quick taps for fever, throat pain, cough and more."], ["3", "Get guidance", "Season-based remedies, generic medicines and a doctor reminder."]].map(s => h("div", { className: "card", key: s[0] }, h("div", { className: "num" }, s[0]), h("h3", null, s[1]), h("p", null, s[2]))))),
+    h("section", { id: "seasons", className: "section" }, h("h2", null, "Care that changes with the ", h("span", { className: "grad" }, "season")), h("div", { className: "grid3" },
+      [["❄️", "Winter", "Cold, flu, sore throat, cough"], ["☀️", "Summer", "Dehydration, heat exhaustion, loose motions"], ["🌧️", "Monsoon", "Dengue, malaria, typhoid, viral fever"]].map(card))),
+    h("section", { className: "final" }, h("h2", null, "Ready to feel better?"), h("button", { className: "btn light", onClick: start }, "Start the free check →")),
+    h("footer", null, h("p", null, "⚠️ MediBuddy is AI-based and gives general information only. It is not a substitute for professional medical advice. Please consult your doctor before taking any medicine."), h("small", null, "© 2026 MediBuddy")));
+}
+ReactDOM.createRoot(document.getElementById("root")).render(h(App));
+</script>
+</body>
+</html>
